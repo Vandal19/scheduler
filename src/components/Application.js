@@ -49,12 +49,20 @@ export default function Application(props) {
     days: [],
     appointments: {}
   });
+  /* Using the Spread Operator method to create new object with all of the existing keys of state */
+  // const setDay = day => setState({ ...state, day });
+  // const setDays = days => setState(prev => ({ ...prev, days}))
+
+  /* Using Object.assign to merge objects. */
+  const setDay = day => setState(Object.assign({}, state, {day}))
+  const setDays = days => setState(prev => (Object.assign({}, prev, {days})))
+
 
   useEffect(() => {
     axios
     .get("/api/days")
     .then((response) => {
-      console.log(response.data)
+      // console.log(response.data)
       setDays(response.data)
     })
   }, []);
@@ -81,8 +89,8 @@ export default function Application(props) {
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
           <DayList
-            days={days}
-            value={day}
+            days={state.days}
+            value={state.day}
             onChange={setDay}
           />
         </nav>
