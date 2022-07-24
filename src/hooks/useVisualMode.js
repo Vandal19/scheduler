@@ -27,37 +27,3 @@ export default function useVisualMode(initial){
 return {mode, transition, back}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // const transition = function(newMode, replace = false) {
-  //   setMode(newMode)
-  //   setHistory(prev =>
-  //     replace ?
-  //     [...prev.slice(0, -1), newMode]
-  //     :
-  //     [...prev, newMode]
-  //   )
-  // };
-
-  // const back = () => {
-  //   const newHistory = [...history];
-  //   // console.log(newHistory)
-  //   console.log([...history])
-  //   newHistory.pop();
-  //   console.log(newHistory)
-  //   setHistory(newHistory)
-  //   newHistory.length > 1 ? setMode(newHistory[newHistory.length - 1]) : setMode(initial)
-  // };
