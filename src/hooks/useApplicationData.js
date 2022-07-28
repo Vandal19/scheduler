@@ -14,8 +14,27 @@ export default function useApplicationData(props) {
   // const setDays = days => setState(prev => ({ ...prev, days}))
 
   /* Using Object.assign to merge objects. */
-  const setDay = (day) => setState(Object.assign({}, state, { day }));
+  const setDay = (day) => setState(prev => ({...state, day}));
   // const setDays = days => setState(prev => (Object.assign({}, prev, {days})))
+
+  const getDaySpots = (appointments, id) => {
+    let newDays = [...state.days]
+    let spots = 0
+
+    const selectedDay = state.days.find((d) => d.appointments.includes(id))
+    const index = state.days.map((day) => day.name).indexOf(selectedDay.name)
+    selectedDay.appointments.forEach((appointment) => {
+      if(appointments[appointment].interview === null) {
+        spots++
+      }
+    })
+
+    selectedDay.spots = spots
+    newDays[index] = selectedDay
+
+    setState((prev) => ({...prev, days: newDays}))
+  }
+
 
   useEffect(() => {
     Promise.all([
@@ -49,6 +68,7 @@ export default function useApplicationData(props) {
         .put(`/api/appointments/${id}`, { interview })
         .then(() => {
           setState({ ...state, appointments });
+          getDaySpots(appointments, id)
           resolve();
         })
         .catch((err) => {
@@ -67,6 +87,7 @@ export default function useApplicationData(props) {
         .delete(`/api/appointments/${id}`)
         .then(() => {
           setState({ ...state, appointments });
+          getDaySpots(appointments, id)
           resolve();
         })
         .catch((err) => {

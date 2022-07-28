@@ -22,26 +22,27 @@ export default function Appointment(props) {
   const EDIT = "EDIT"
   const ERROR_SAVE = 'ERROR_SAVE';
   const ERROR_DELETE = 'ERROR_DELETE';
-
   const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
 
   const onAdd= () => {transition(CREATE)}
   const onCancel = () => back()
 
   const onSave = function(name, interviewer) {
-    transition(SAVING, true);
+      transition(SAVING, true);
 
-    const interview = {
-      student: name,
-      interviewer
-    };
+      const interview = {
+        student: name,
+        interviewer
+      };
 
-    transition(SAVING)
+      transition(SAVING)
 
-    bookInterview(props.id, interview)
-    .then(() => transition(SHOW))
-    .catch((err) => transition(ERROR_SAVE, true));
-  };
+      bookInterview(props.id, interview)
+      .then(() => transition(SHOW))
+      .catch(err => transition(ERROR_SAVE, true));
+  }
+
+
 
   const onDelete = function() {
     transition(CONFIRM, true);

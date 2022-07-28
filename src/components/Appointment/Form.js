@@ -5,8 +5,10 @@ import Button from "components/Button";
 
 export default function Form(props) {
   const [student, setStudent] = useState(props.student || "");
-  const [interviewer, setInterviewer] = useState(props.interviewer || null);
+  const [interviewer, setInterviewer] = useState(props.interviewer?.id || null);
   const { interviewers, onSave, onCancel, onDelete } = props
+  console.log("this is the interviewer", props.interviewer)
+  const [error, setError] = useState("")
 
   const reset = function() {
     setStudent("")
@@ -19,9 +21,15 @@ export default function Form(props) {
   }
 
   const save = function() {
-    onSave(student, interviewer)
+    if(!student) {
+      setError("Student name cannot be empty")
+    } else if (!interviewer) {
+      console.log("interviewer", interviewer)
+      setError("Interviewer must be selected")
+    } else {
+      onSave(student, interviewer)
+    }
   }
-
   return(
     <main className="appointment__card appointment__card--create">
       <section className="appointment__card-left">
@@ -35,6 +43,11 @@ export default function Form(props) {
             onChange={(event) => setStudent(event.target.value)}
           />
         </form>
+        {error && (
+          <div>
+          {error}
+        </div>
+        )}
         <InterviewerList
           interviewers={interviewers}
           value={interviewer}
