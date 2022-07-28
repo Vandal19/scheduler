@@ -1,39 +1,59 @@
-import { useState, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import axios from "axios";
+import { action } from "@storybook/addon-actions";
 
 export default function useApplicationData(props) {
-  const [state, setState] = useState({
+  const SET_DAY = "SET_DAY";
+  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+  const SET_INTERVIEW = "SET_INTERVIEW";
+
+  function reducer(state, action) {
+    switch (action.type) {
+      case SET_DAY:
+        return ({...state, day: action.value});
+      case SET_APPLICATION_DATA:
+        return ({...state,
+          days: action.value.days,
+          appointments: action.value.appointments,
+          interviewers: action.value.interviewers
+        });
+      case SET_INTERVIEW: {
+        const appointment = {
+          ...state.appointments[action.id],
+          interview:  action.interview ,
+        };
+
+        const appointments = {
+          ...state.appointments,
+          [action.id]: appointment
+        };
+
+        const selectedDay = state.days.find((d) => d.appointments.includes(action.id))
+        let spots = 0
+
+        selectedDay.appointments.forEach((appointmentId) => {
+          if(appointments[appointmentId].interview === null) {
+            spots ++
+          }
+        })
+
+        const days = state.days.map((day) => day.name === selectedDay.name ? {...day, spots} : day);
+
+        return {...state, appointments, days}
+      }
+      default:
+      throw new Error(
+        `Tried to reduce with unsupported action type: ${action.type}`
+      )
+    }
+  }
+
+  const [state, dispatch] = useReducer(reducer, {
     day: "Monday",
     days: [],
     appointments: {},
     interviewers: {},
   });
-
-  /* Using the Spread Operator method to create new object with all of the existing keys of state */
-  // const setDay = day => setState({ ...state, day });
-  // const setDays = days => setState(prev => ({ ...prev, days}))
-
-  /* Using Object.assign to merge objects. */
-  const setDay = (day) => setState(prev => ({...state, day}));
-  // const setDays = days => setState(prev => (Object.assign({}, prev, {days})))
-
-  const getDaySpots = (appointments, id) => {
-    let newDays = [...state.days]
-    let spots = 0
-
-    const selectedDay = state.days.find((d) => d.appointments.includes(id))
-    const index = state.days.map((day) => day.name).indexOf(selectedDay.name)
-    selectedDay.appointments.forEach((appointment) => {
-      if(appointments[appointment].interview === null) {
-        spots++
-      }
-    })
-
-    selectedDay.spots = spots
-    newDays[index] = selectedDay
-
-    setState((prev) => ({...prev, days: newDays}))
-  }
 
 
   useEffect(() => {
@@ -45,30 +65,27 @@ export default function useApplicationData(props) {
       .then((all) => {
         // console.log(all)
         console.log(all[2].data);
-        setState((prev) => ({
-          ...prev,
+        dispatch({
+          type: SET_APPLICATION_DATA,
+          value: {
           days: all[0].data,
           appointments: all[1].data,
           interviewers: all[2].data,
-        }));
+          }
+        });
       })
       .catch((error) => console.log(error.message));
   }, []);
 
+  const setDay = (day) => dispatch({type: SET_DAY, value: day});
+
   const bookInterview = (id, interview) => {
     console.log(id, interview);
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview },
-    };
-    const appointments = { ...state.appointments, [id]: appointment };
-
     return new Promise((resolve, reject) => {
       axios
         .put(`/api/appointments/${id}`, { interview })
         .then(() => {
-          setState({ ...state, appointments });
-          getDaySpots(appointments, id)
+          dispatch({type: SET_INTERVIEW, id, interview});
           resolve();
         })
         .catch((err) => {
@@ -79,15 +96,11 @@ export default function useApplicationData(props) {
   };
 
   const cancelInterview = (id) => {
-    const appointment = { ...state.appointments[id], interview: null };
-    const appointments = { ...state.appointments, [id]: appointment };
-
     return new Promise((resolve, reject) => {
       axios
         .delete(`/api/appointments/${id}`)
         .then(() => {
-          setState({ ...state, appointments });
-          getDaySpots(appointments, id)
+          dispatch({type: SET_INTERVIEW, id, interview: null});
           resolve();
         })
         .catch((err) => {
