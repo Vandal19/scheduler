@@ -2,7 +2,7 @@ import { useReducer, useEffect } from "react";
 import axios from "axios";
 import { action } from "@storybook/addon-actions";
 
-export default function useApplicationData(props) {
+export default function useApplicationData() {
   const SET_DAY = "SET_DAY";
   const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
   const SET_INTERVIEW = "SET_INTERVIEW";
@@ -109,5 +109,25 @@ export default function useApplicationData(props) {
         });
     });
   };
+
+  useEffect(() => {
+    const webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+
+    webSocket.onopen = function(event) {
+      webSocket.send("ping!")
+    };
+
+    webSocket.onmessage = function(event) {
+      webSocket.send("Message received", event.data)
+      const data = JSON.parse(event.data)
+
+      if(data.type === 'SET_INTERVIEW') {
+        dispatch({type: SET_INTERVIEW, id: data.id, interview: data.interview})
+      }
+    };
+    return () => {
+      webSocket.close();
+    };
+  }, [])
   return { state, setDay, bookInterview, cancelInterview };
 }
