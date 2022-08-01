@@ -1,6 +1,5 @@
 import { useReducer, useEffect } from "react";
 import axios from "axios";
-import { action } from "@storybook/addon-actions";
 
 export default function useApplicationData() {
   const SET_DAY = "SET_DAY";
