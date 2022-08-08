@@ -6,11 +6,12 @@ import Button from "components/Button";
 export default function Form(props) {
   const [student, setStudent] = useState(props.student || "");
   const [interviewer, setInterviewer] = useState(props.interviewer?.id || null);
-  const { interviewers, onSave, onCancel } = props
   const [error, setError] = useState("")
+  const { interviewers, onSave, onCancel } = props
 
   const reset = function() {
     setStudent("")
+    setError("")
     setInterviewer(null)
   }
 
@@ -19,15 +20,18 @@ export default function Form(props) {
     onCancel();
   }
 
-  const save = function() {
-    if(!student) {
-      setError("Student name cannot be empty")
-    } else if (!interviewer) {
-      console.log("interviewer", interviewer)
-      setError("Interviewer must be selected")
-    } else {
-      onSave(student, interviewer)
+  const validate = () => {
+    if (student === '') {
+      setError('student name cannot be blank');
+      return;
     }
+
+    if (interviewer === null) {
+      setError('please select an interviewer');
+      return;
+    }
+    setError(null);
+      onSave(student, interviewer);
   }
   return(
     <main className="appointment__card appointment__card--create">
@@ -40,13 +44,10 @@ export default function Form(props) {
             placeholder="Enter Student Name"
             value={student}
             onChange={(event) => setStudent(event.target.value)}
+            data-testid="student-name-input"
           />
+          <section className='appointment__validation'>{error}</section>
         </form>
-        {error && (
-          <div>
-          {error}
-        </div>
-        )}
         <InterviewerList
           interviewers={interviewers}
           value={interviewer}
@@ -56,7 +57,7 @@ export default function Form(props) {
       <section className="appointment__card-right">
         <section className="appointment__actions">
           <Button danger onClick={cancel}>Cancel</Button>
-          <Button confirm onClick={save}>Save</Button>
+          <Button confirm onClick={validate}>Save</Button>
         </section>
       </section>
     </main>
