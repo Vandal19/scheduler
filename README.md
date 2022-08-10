@@ -23,6 +23,12 @@ npm test
 ```sh
 npm run storybook
 ```
+
+## Running Cypress Test Framework
+```sh
+npm run cypress
+```
+
 ### Overview of Web App & Creating New Appointment
 
 !["Overview"](./docs/Overview_of_App_and_Setting_an_Appointment.gif)
@@ -32,7 +38,7 @@ npm run storybook
 !["Edit & Delete"](./docs/Editing_and_Deleting_Appointment.gif)
 
 ### Websock connections
-!["Websocket"](./docs/Websocket Connection.gif)
+!["Websocket"](./docs/Websocket_Connection.gif)
 
 ## Functional Requirements
 - Development focuses on a single page application (SPA) called Interview Scheduler, built using React.
@@ -55,7 +61,7 @@ npm run storybook
 - When the user presses the close button of the error they are returned to the Form or Show view (skipping Status and Confirm).
 - The application makes API requests to load and persist data. We do not lose data after a browser refresh.
 
-## Technical Specification
+## Dependencies
 - React
 - Webpack, Babel
 - Axios, WebSockets
