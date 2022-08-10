@@ -149,6 +149,4 @@ describe('Application', () => {
 		expect(getByText(day, "1 spot remaining")).toBeInTheDocument();
   });
 
-
-
 });
