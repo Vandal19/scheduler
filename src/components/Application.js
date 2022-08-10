@@ -57,6 +57,7 @@ export default function Application(props) {
       </section>
       <section className="schedule">
         {appointmentsArray}
+        <Appointment time="5pm"/>
       </section>
     </main>
   );

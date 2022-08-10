@@ -60,7 +60,7 @@ describe('Application', () => {
     await waitForElement(() => getByText(container, 'Archie Cohen'));
     const appointment = getAllByTestId(container, 'appointment').find((app) => queryByText(app, 'Archie Cohen'));
 
-    fireEvent.click(getByAltText(appointment, "delete button"));
+    fireEvent.click(getByAltText(appointment, "delete"));
     expect(getByText(appointment, 'Are you sure you would like to delete?')).toBeInTheDocument();
 
     fireEvent.click(getByText(appointment, 'Confirm'));
@@ -81,7 +81,7 @@ describe('Application', () => {
 
     const appointment = getAllByTestId(container, 'appointment').find((app) => queryByText(app, 'Archie Cohen'));
 
-    fireEvent.click(getByAltText(appointment, 'edit button'));
+    fireEvent.click(getByAltText(appointment, 'edit'));
 
     await waitForElement(() => getByText(appointment, 'Save'));
 
@@ -135,7 +135,7 @@ describe('Application', () => {
 
 		const appointment = getAllByTestId(container, "appointment").find(app => queryByText(app, "Archie Cohen"));
 
-    fireEvent.click(getByAltText(appointment, "delete button"));
+    fireEvent.click(getByAltText(appointment, "delete"));
 
 		expect(getByText(appointment, "Are you sure you would like to delete?")).toBeInTheDocument();
 
