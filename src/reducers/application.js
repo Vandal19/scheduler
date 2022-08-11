@@ -1,42 +1,49 @@
 // set constants for switch case
-export const SET_DAY = 'SET_DAY';
-export const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
-export const SET_INTERVIEW = 'SET_INTERVIEW';
+export const SET_DAY = "SET_DAY";
+export const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+export const SET_INTERVIEW = "SET_INTERVIEW";
 
 export default function reducer(state, action) {
   switch (action.type) {
-
     // set state with new day value
     case SET_DAY:
-      return {...state, day: action.value};
+      return { ...state, day: action.value };
 
     // set state with data received from api
     case SET_APPLICATION_DATA:
-      return {...state,
+      return {
+        ...state,
         days: action.value.days,
         appointments: action.value.appointments,
-        interviewers: action.value.interviewers
+        interviewers: action.value.interviewers,
       };
 
     // set state with new appointment data
     case SET_INTERVIEW:
-      const appointment = {...state.appointments[action.id], interview: action.interview};
-      const appointments = {...state.appointments, [action.id]: appointment};
+      const appointment = {
+        ...state.appointments[action.id],
+        interview: action.interview,
+      };
+      const appointments = { ...state.appointments, [action.id]: appointment };
 
-      const findDay = state.days.find((dayObj) => dayObj.appointments.includes(action.id))
+      const findDay = state.days.find((dayObj) =>
+        dayObj.appointments.includes(action.id)
+      );
       let spots = 0;
 
       findDay.appointments.forEach((appointmentId) => {
-        if (appointments[appointmentId].interview === null) spots++
-      })
+        if (appointments[appointmentId].interview === null) spots++;
+      });
 
-      const days = state.days.map(day => (day.name === findDay.name) ? {...day, spots} : day);
+      const days = state.days.map((day) =>
+        day.name === findDay.name ? { ...day, spots } : day
+      );
 
-      return {...state, appointments, days};
+      return { ...state, appointments, days };
 
     default:
       throw new Error(
         `Tried to reduce with unsupported action type: ${action.type}`
       );
-  };
-};
+  }
+}
