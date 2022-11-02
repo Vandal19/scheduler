@@ -28,7 +28,7 @@ deploy:
   steps:
     - add_ssh_keys:
         fingerprints:
-          - "f0:9f:10:12:9e:89:a7:a8:65:5b:37:1b:18:f2:09:76"
+          - "7b:48:38:d6:18:86:95:a0:0c:c2:2b:46:47:46:ea:98"
     - checkout
     - run:
         name: Push Master to Production
